@@ -1,0 +1,35 @@
+\hypertarget{group__group5}{
+\section{MESURE COHERENCE LEVEL}
+\label{group__group5}\index{MESURE COHERENCE LEVEL@{MESURE COHERENCE LEVEL}}
+}
+\subsection*{Defines}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{group__group5_ga74da21a14b4d46eaa0d1bf33d8eb8867}{ALL\_\-GOOD}~0
+\item 
+\#define \hyperlink{group__group5_ga5cb439d9f933fde4cf23caa370c030e7}{WARNING}~1
+\item 
+\#define \hyperlink{group__group5_ga83407c90dbd7ab867fe438dc3e5d9373}{PANIC}~2
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Those states command the HUD display 
+
+\subsection{Define Documentation}
+\hypertarget{group__group5_ga74da21a14b4d46eaa0d1bf33d8eb8867}{
+\index{group5@{group5}!ALL\_\-GOOD@{ALL\_\-GOOD}}
+\index{ALL\_\-GOOD@{ALL\_\-GOOD}!group5@{group5}}
+\subsubsection[{ALL\_\-GOOD}]{\setlength{\rightskip}{0pt plus 5cm}\#define ALL\_\-GOOD~0}}
+\label{group__group5_ga74da21a14b4d46eaa0d1bf33d8eb8867}
+Mesures are coherent : there is no differences greater then 0,2 b between any two mesures \hypertarget{group__group5_ga83407c90dbd7ab867fe438dc3e5d9373}{
+\index{group5@{group5}!PANIC@{PANIC}}
+\index{PANIC@{PANIC}!group5@{group5}}
+\subsubsection[{PANIC}]{\setlength{\rightskip}{0pt plus 5cm}\#define PANIC~2}}
+\label{group__group5_ga83407c90dbd7ab867fe438dc3e5d9373}
+Totaly incoherent : there no two mesures in a 0,2 b interval \hypertarget{group__group5_ga5cb439d9f933fde4cf23caa370c030e7}{
+\index{group5@{group5}!WARNING@{WARNING}}
+\index{WARNING@{WARNING}!group5@{group5}}
+\subsubsection[{WARNING}]{\setlength{\rightskip}{0pt plus 5cm}\#define WARNING~1}}
+\label{group__group5_ga5cb439d9f933fde4cf23caa370c030e7}
+Cell warning : there is one and only one differences greater then 0,2 b between any two mesures 

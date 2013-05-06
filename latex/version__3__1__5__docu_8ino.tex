@@ -1,0 +1,169 @@
+\hypertarget{version__3__1__5__docu_8ino}{
+\section{version\_\-3\_\-1\_\-5\_\-docu.ino File Reference}
+\label{version__3__1__5__docu_8ino}\index{version\_\-3\_\-1\_\-5\_\-docu.ino@{version\_\-3\_\-1\_\-5\_\-docu.ino}}
+}
+
+
+Afficheur oxygene 3 sondes, moyenne robuste et HUD.  
+
+
+{\ttfamily \#include $<$avr/interrupt.h$>$}\par
+{\ttfamily \#include $<$avr/power.h$>$}\par
+{\ttfamily \#include $<$avr/sleep.h$>$}\par
+{\ttfamily \#include $<$avr/io.h$>$}\par
+{\ttfamily \#include $<$EEPROM.h$>$}\par
+{\ttfamily \#include \char`\"{}EntSorties.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}lib\_\-eeprom.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}led\_\-boutons.c\char`\"{}}\par
+{\ttfamily \#include $<$LiquidCrystal.h$>$}\par
+\subsection*{Defines}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{version__3__1__5__docu_8ino_a1c6d5de492ac61ad29aec7aa9a436bbf}{
+\#define {\bfseries VERSION}~\char`\"{}3.1.5\char`\"{}}
+\label{version__3__1__5__docu_8ino_a1c6d5de492ac61ad29aec7aa9a436bbf}
+
+\item 
+\#define \hyperlink{version__3__1__5__docu_8ino_a6a814c1adb22201ef288b62688eb31d8}{FLAG\_\-CORRECT\_\-STOP}~12
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+LiquidCrystal \hyperlink{version__3__1__5__docu_8ino_ae5fc907a4875b35b9992179c6ecf6dde}{lcd} (8, 7, 6, 5, 4, 3)
+\item 
+\hypertarget{version__3__1__5__docu_8ino_a8d79d10faa260aaab1ccb158fc9cbc4f}{
+void {\bfseries sleepNow} (void)}
+\label{version__3__1__5__docu_8ino_a8d79d10faa260aaab1ccb158fc9cbc4f}
+
+\item 
+\hypertarget{version__3__1__5__docu_8ino_ae2ed25aab748b2c21d4d6f3951e03e8f}{
+void {\bfseries pinInterrupt} (void)}
+\label{version__3__1__5__docu_8ino_ae2ed25aab748b2c21d4d6f3951e03e8f}
+
+\item 
+\hypertarget{version__3__1__5__docu_8ino_a7dfd9b79bc5a37d7df40207afbc5431f}{
+void {\bfseries setup} (void)}
+\label{version__3__1__5__docu_8ino_a7dfd9b79bc5a37d7df40207afbc5431f}
+
+\item 
+\hypertarget{version__3__1__5__docu_8ino_a0b33edabd7f1c4e4a0bf32c67269be2f}{
+void {\bfseries loop} (void)}
+\label{version__3__1__5__docu_8ino_a0b33edabd7f1c4e4a0bf32c67269be2f}
+
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+char \hyperlink{version__3__1__5__docu_8ino_adfa014924a11e5a329bd54ad88bf1ddc}{ETAT}
+\item 
+struct \hyperlink{structmesure}{mesure} \hyperlink{version__3__1__5__docu_8ino_aefff17cf4a5a87c3d04f604506918d3d}{canal} \mbox{[}$\,$\mbox{]}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Afficheur oxygene 3 sondes, moyenne robuste et HUD. \begin{DoxyVersion}{Version}
+3.1.5 doc
+\end{DoxyVersion}
+
+\begin{DoxyItemize}
+\item Prevue pour HUD 
+\item Clignotement rapide en cas d'alarme, lent si tout est vert 
+\item Moyenne robuste des 3 sondes 
+\item Affichage de CELL WARNING si diff entre deux sonde $>$ 0.2 b 
+\end{DoxyItemize}boutons 1 et 2 actif bas resistance de pull up sur les boutons 1 et 2 rajouter filtre passe bas sur les ampli op (60 nf pour couper a 4 Hz)
+
+TODO Controle pile (pas de mesure implantee)
+
+Systeme de recuperation des coupures d'alim :
+
+lors du passage en mode \char`\"{}plongee\char`\"{} Les coeff de calibration des sondes sont stockes en EEPROM (adresse 0, 4 et 8, 4 octets par coeff) Un flag (adresse 12, un octet) est mis a 0 Lors d'un arret normal le flag est mis à 1 Au demarrage le flag est teste. Si le flag est a 1, la sequence de demarrage normal est lancee : aff version -\/$>$ test LED -\/$>$ test sondes -\/$>$ calibration -\/$>$ plongee Si le flag est a 0 le mode recuperation est lance les coeff de calibrations precedent sont recuperes en EEPROM et on passe en mode plongee en affichant \char`\"{}RECUPERATION\char`\"{} 
+\begin{DoxyPre}\end{DoxyPre}
+
+
+
+\begin{DoxyPre}                     ARRET 0 ------------>----------------->------------>
+                        |                                                |
+                        | BOUT\_1 presse                                  |
+                        |                                                |
+                     REVEIL  -> affiche num de version -------->-------->|
+                        |                                                |
+                        | BOUT\_1 presse                                  | TEST : SI Flag arret correct non a 1
+                        |                                                |
+                     CHECK\_LED\_1                                       Lecture en EEPROM des ancien coeffs
+                        |                                                |
+                        | BOUT\_1 lache                                 Affichage de "RECUPERATION" sur LCD
+                        |                                                |
+                     CHECK\_LED\_2                                         |
+                        |                                                |
+                        | BOUT\_1 presse                                  |  
+                        |                                                |
+                     CHECK\_SONDES\_1                                      |
+                        |                                                |
+                        | BOUT\_1 lache                                   |
+                        |                                                |
+                     CHECK\_SONDES\_2                                      |
+                        |                                                |
+                        | BOUT\_1 presse                                  |
+                        |                                                |
+                     CALIBRATE -> stockage coeff en EEPROM               |
+                        |         Flag arret correct 0                   |
+                        |                                                |
+                        | BOUT\_1 lache                                   |
+                        |                                                |
+                     MESURE <----------<---------------<-----------------
+                        |                                                ^
+                        | BOUT\_1 presse                                  |
+                        |                                                |
+       <--------- CONF\_ARRET -------->                                   |
+      |                               |                                  ^
+      | BOUT\_2 presse                 | tempo 5 secondes                 |
+      |                               |                                  |
+    ARRET Flag arret correct 1        ------------->----------->-------->
+*\end{DoxyPre}
+ 
+
+\subsection{Define Documentation}
+\hypertarget{version__3__1__5__docu_8ino_a6a814c1adb22201ef288b62688eb31d8}{
+\index{version\_\-3\_\-1\_\-5\_\-docu.ino@{version\_\-3\_\-1\_\-5\_\-docu.ino}!FLAG\_\-CORRECT\_\-STOP@{FLAG\_\-CORRECT\_\-STOP}}
+\index{FLAG\_\-CORRECT\_\-STOP@{FLAG\_\-CORRECT\_\-STOP}!version_3_1_5_docu.ino@{version\_\-3\_\-1\_\-5\_\-docu.ino}}
+\subsubsection[{FLAG\_\-CORRECT\_\-STOP}]{\setlength{\rightskip}{0pt plus 5cm}\#define FLAG\_\-CORRECT\_\-STOP~12}}
+\label{version__3__1__5__docu_8ino_a6a814c1adb22201ef288b62688eb31d8}
+position en EEPROM du FLAG d'arret correct (apres le dernier coeff de conversion de la sonde 3) 
+
+\subsection{Function Documentation}
+\hypertarget{version__3__1__5__docu_8ino_ae5fc907a4875b35b9992179c6ecf6dde}{
+\index{version\_\-3\_\-1\_\-5\_\-docu.ino@{version\_\-3\_\-1\_\-5\_\-docu.ino}!lcd@{lcd}}
+\index{lcd@{lcd}!version_3_1_5_docu.ino@{version\_\-3\_\-1\_\-5\_\-docu.ino}}
+\subsubsection[{lcd}]{\setlength{\rightskip}{0pt plus 5cm}LiquidCrystal lcd (
+\begin{DoxyParamCaption}
+\item[{8}]{, }
+\item[{7}]{, }
+\item[{6}]{, }
+\item[{5}]{, }
+\item[{4}]{, }
+\item[{3}]{}
+\end{DoxyParamCaption}
+)}}
+\label{version__3__1__5__docu_8ino_ae5fc907a4875b35b9992179c6ecf6dde}
+Objet afficheur LCD connection for 4 bits command 8-\/$>$RS 7-\/$>$CS 6-\/$>$D4 5-\/$>$D5 6-\/$>$D6 7-\/$>$D7 
+
+\subsection{Variable Documentation}
+\hypertarget{version__3__1__5__docu_8ino_aefff17cf4a5a87c3d04f604506918d3d}{
+\index{version\_\-3\_\-1\_\-5\_\-docu.ino@{version\_\-3\_\-1\_\-5\_\-docu.ino}!canal@{canal}}
+\index{canal@{canal}!version_3_1_5_docu.ino@{version\_\-3\_\-1\_\-5\_\-docu.ino}}
+\subsubsection[{canal}]{\setlength{\rightskip}{0pt plus 5cm}struct {\bf mesure} {\bf canal}\mbox{[}$\,$\mbox{]}}}
+\label{version__3__1__5__docu_8ino_aefff17cf4a5a87c3d04f604506918d3d}
+{\bfseries Initial value:}
+\begin{DoxyCode}
+{
+  {sonde_1, LED_R1, LED_V1, 0, 0, 0, 0, 0, 0} ,
+  {sonde_2, LED_R2, LED_V2, 4, 0, 0, 0, 0, 5 } ,
+  {sonde_3, LED_R3, LED_V3, 8, 0, 0, 0, 0, 10 } , 
+}
+\end{DoxyCode}
+Tableau contenant les datas des trois canaux de mesure \hypertarget{version__3__1__5__docu_8ino_adfa014924a11e5a329bd54ad88bf1ddc}{
+\index{version\_\-3\_\-1\_\-5\_\-docu.ino@{version\_\-3\_\-1\_\-5\_\-docu.ino}!ETAT@{ETAT}}
+\index{ETAT@{ETAT}!version_3_1_5_docu.ino@{version\_\-3\_\-1\_\-5\_\-docu.ino}}
+\subsubsection[{ETAT}]{\setlength{\rightskip}{0pt plus 5cm}char {\bf ETAT}}}
+\label{version__3__1__5__docu_8ino_adfa014924a11e5a329bd54ad88bf1ddc}
+Etat de la machine d etat, voir \char`\"{}ETAT DE LA MACHINE D'ETAT\char`\"{} dans les modules 
