@@ -263,6 +263,6 @@ void loop(void){
                   	lcd.setCursor(12, 0); lcd.print(Mr,2);
                   	FOR_3 { lcd.setCursor(canal[i].Curs_Pos, 1);  lcd.print(canal[i].PO2,2);  }     
        	        }
-	} // Fin boucle tempo de lecture toute les demi secondes
+	} // End of 1/2 sec timing loop
 } // Fin MAIN
 
